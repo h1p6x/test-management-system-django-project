@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DiplomatmsdpConfig(AppConfig):
+class tmsdpConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'diplomatmsdp'
+    name = 'tms'
