@@ -1,5 +1,6 @@
+from rest_framework import serializers
+
 from . import models
-from rest_framework import serializers, status
 
 
 class TestProjectCreateSerializer(serializers.ModelSerializer):
@@ -36,6 +37,23 @@ class TestSuitListSerializer(serializers.Serializer):
     project = serializers.CharField(source='project.name', max_length=200)
 
 
+class TestSuitAllListSerializer(serializers.ModelSerializer):
+    project = serializers.CharField(source='project.name', max_length=200)
+
+    class Meta:
+        model = models.TestSuit
+        fields = '__all__'
+
+
+class TestCaseAllListSerializer(serializers.ModelSerializer):
+    priority = serializers.CharField(source='priority.name', max_length=200)
+    testSuit = serializers.CharField(source='testSuit.name', max_length=200)
+
+    class Meta:
+        model = models.TestCase
+        fields = '__all__'
+
+
 class TestCaseListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
@@ -69,6 +87,15 @@ class TestRunsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TestRunAllListSerializer(serializers.ModelSerializer):
+    testProject = serializers.CharField(source='testProject.name', max_length=200)
+
+    # testcases = serializers.CharField(source='testcases.name', max_length=500)
+    class Meta:
+        model = models.TestRun
+        fields = '__all__'
+
+
 class TestRunsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TestRun
@@ -90,3 +117,27 @@ class TestRunsResultCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TestRunResult
         fields = ['status', 'comment', 'trrDate']
+
+
+class TestRunsResultAllListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.TestRunResult
+        fields = '__all__'
+
+
+class PriorityAllListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Priority
+        fields = '__all__'
+
+
+class TestRunResulStatusAllListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StatusTestRun
+        fields = '__all__'
+
+
+class TestRunTestCaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.TestRunTestCase
+        fields = '__all__'
