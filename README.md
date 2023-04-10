@@ -1,4 +1,4 @@
-# test-management-system-django-project
+# Test Management System (`Django + React`)
 
 ## Основные возможности API
 
