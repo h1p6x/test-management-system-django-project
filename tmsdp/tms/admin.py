@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .database.models import *
 
 admin.site.register(TestCase)
 admin.site.register(StatusTestRun)

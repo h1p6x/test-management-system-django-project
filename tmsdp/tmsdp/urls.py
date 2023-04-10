@@ -44,5 +44,5 @@ def get_success_url(self):
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-                  path('', include('tms.urls')),
+                  path('', include('tms.utils.urls')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
