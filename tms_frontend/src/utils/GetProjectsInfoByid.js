@@ -86,15 +86,12 @@ function GetProjectsInfoByid() {
     const submitSuitForm = async () => {
         createTestSuit({authTokens, testSuitCreate, projectId}).then((response) => {
             if (response.status === 201) {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Тест-сьют успешно добавлен'
-                });
+                messageApi.success('Тест-сьют успешно добавлен');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Произошла непредвиденная ошибка'
-                });
+                messageApi.error('Произошла непредвиденная ошибка');
             }
         });
         setTestSuitCreate({name: '', description: ''});
@@ -103,17 +100,21 @@ function GetProjectsInfoByid() {
     };
 
     const submitRunForm = async () => {
+
+        if (!testRunCreate.testcases || testRunCreate.testcases.length === 0) {
+            messageApi.error('Пожалуйста, выберите хотя бы один тест-кейс ' +
+                'или тест-сьют содержащий тест-кейс');
+            return;
+        }
+
         createTestRun({authTokens, testRunCreate, projectId}).then((response) => {
             if (response.status === 201) {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Тестовый запуск успешно добавлен'
-                });
+                messageApi.success('Тестовый запуск успешно добавлен');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Произошла непредвиденная ошибка'
-                });
+                messageApi.error('Произошла непредвиденная ошибка');
             }
         });
         setTestRunCreate({name: '', description: '', testcases: []});
@@ -122,7 +123,6 @@ function GetProjectsInfoByid() {
         setTestCaseEnable(false);
         setTestSuitEnable(false);
     };
-
     const selectChange = async (e) => {
         for (let i = 0; i < e.length; i++) {
             const data = await getTestCaseForSuit({authTokens, projectId, testSuitId: e[i]});
@@ -193,166 +193,197 @@ function GetProjectsInfoByid() {
                 padding: 24,
                 minHeight: 360,
                 width: '100%',
+                paddingTop: '50px',
+                paddingLeft: '200px',
                 backgroundColor: colorBgContainer
             }}>
-                <Breadcrumb>
-                    {/*<Breadcrumb.Item>{testSuit.map((object) => (*/}
-                    {/*    object.project*/}
-                    {/*)).slice(0, 1)}</Breadcrumb.Item>*/}
-                    <Breadcrumb.Item>
-                        {testProject.name}
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>Тест-сьюты</Breadcrumb.Item>
-                </Breadcrumb>
-                <Button type="primary" onClick={showSuitModal} style={{
-                    float: 'right', display: testProject.status ===
-                    'Open' ? 'block' : 'none'
-                }}>
-                    Добавить тест-сьют
-                </Button>
-                <Modal title='Создание нового тест-сьюта' open={isModalSuitsOpen} onOk={testSuitForm.submit}
-                       onCancel={suitHandleCancel}>
-                    <Form
-                        form={testSuitForm}
-                        onFinish={submitSuitForm}
+                <div style={{marginLeft: '20px'}}>
+                    <Breadcrumb style={{marginTop: '20px', marginBottom: '20px'}}>
+                        <Breadcrumb.Item>
+                            {testProject.name}
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>Тест-сьюты</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Button type="primary" onClick={showSuitModal} style={{
+                        float: 'right', display: testProject.status ===
+                        'Open' ? 'block' : 'none', marginBottom: '30px'
+                    }}>
+                        Добавить тест-сьют
+                    </Button>
+                    <Modal title="Создание нового тест-сьюта" open={isModalSuitsOpen} onOk={testSuitForm.submit}
+                           onCancel={suitHandleCancel}
+                           okText="Добавить"
+                           cancelText="Отмена"
+                           cancelButtonProps={{ style: { float: 'right', marginLeft: "5px"} }}
                     >
-                        <Form.Item name={'name'}>
-                            <Input
-                                placeholder='Название тест-сьюта'
-                                maxLength={100}
-                                style={{
-                                    marginTop: 5,
-                                }}
-                                allowClear
-                                onChange={event => setTestSuitCreate({
-                                    ...testSuitCreate,
-                                    name: event.target.value
-                                })}
-                            ></Input>
-                        </Form.Item>
-                        <Form.Item name={'description'}>
-                            <TextArea
-                                showCount
-                                maxLength={100}
-                                style={{
-                                    height: 120,
-                                    resize: 'none',
-                                }}
-                                placeholder="Описание тест-сьюта"
-                                onChange={event => setTestSuitCreate({
-                                    ...testSuitCreate,
-                                    description: event.target.value
-                                })}
-                            />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-                {contextHolder}
-                <TestSuitForProjectTable testSuit={testSuit} loading={loading}></TestSuitForProjectTable>
-                <Breadcrumb>
-                    {/*<Breadcrumb.Item>{testRun.map((object) => (*/}
-                    {/*    object.testProject*/}
-                    {/*)).slice(0, 1)}</Breadcrumb.Item>*/}
-                    <Breadcrumb.Item>
-                        {testProject.name}
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>Тестовые запуски</Breadcrumb.Item>
-                </Breadcrumb>
-                <Button type="primary" onClick={showRunsModal} style={{
-                    float: 'right', display: testProject.status ===
-                    'Open' ? 'block' : 'none'
-                }}>
-                    Добавить тестовый запуск
-                </Button>
-                <Modal title='Создание нового тестового запуска' open={isModalRunsOpen} onOk={testRunForm.submit}
-                       onCancel={runsHandleCancel}>
-                    <Form
-                        form={testRunForm}
-                        onFinish={submitRunForm}
+                        <Form
+                            form={testSuitForm}
+                            onFinish={submitSuitForm}
+                        >
+                            <Form.Item name={'name'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, введите название'
+                            }]}>
+                                <Input
+                                    placeholder='Название тест-сьюта'
+                                    maxLength={100}
+                                    style={{
+                                        marginTop: 5,
+                                    }}
+                                    allowClear
+                                    onChange={event => setTestSuitCreate({
+                                        ...testSuitCreate,
+                                        name: event.target.value
+                                    })}
+                                ></Input>
+                            </Form.Item>
+                            <Form.Item name={'description'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, введите описание'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={100}
+                                    style={{
+                                        height: 120,
+                                        resize: 'none',
+                                    }}
+                                    placeholder="Описание тест-сьюта"
+                                    onChange={event => setTestSuitCreate({
+                                        ...testSuitCreate,
+                                        description: event.target.value
+                                    })}
+                                />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    {contextHolder}
+                    <TestSuitForProjectTable testSuit={testSuit} loading={loading}></TestSuitForProjectTable>
+                    <Breadcrumb style={{marginTop: '20px', marginBottom: '20px'}}>
+                        {/*<Breadcrumb.Item>{testRun.map((object) => (*/}
+                        {/*    object.testProject*/}
+                        {/*)).slice(0, 1)}</Breadcrumb.Item>*/}
+                        <Breadcrumb.Item>
+                            {testProject.name}
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>Тестовые запуски</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Button type="primary" onClick={showRunsModal} style={{
+                        float: 'right', display: testProject.status ===
+                        'Open' ? 'block' : 'none', marginBottom: '30px'
+                    }}>
+                        Добавить тестовый запуск
+                    </Button>
+                    <Modal title="Создание нового тестового запуска" open={isModalRunsOpen} onOk={testRunForm.submit}
+                           onCancel={runsHandleCancel}
+                           okText="Добавить"
+                           cancelText="Отмена"
+                           cancelButtonProps={{ style: { float: 'right', marginLeft: "5px"} }}
                     >
-                        <Form.Item name={'name'}>
-                            <Input
-                                placeholder='Название тестовго запуска'
-                                maxLength={100}
-                                style={{
-                                    marginTop: 5,
-                                }}
-                                allowClear
-                                onChange={event => setTestRunCreate({
-                                    ...testRunCreate,
-                                    name: event.target.value
-                                })}
-                            ></Input>
-                        </Form.Item>
-                        <Form.Item name={'description'}>
-                            <TextArea
-                                showCount
-                                maxLength={100}
-                                style={{
-                                    height: 120,
-                                    resize: 'none',
-                                }}
-                                placeholder="Описание тестового запуска"
-                                onChange={event => setTestRunCreate({
-                                    ...testRunCreate,
-                                    description: event.target.value
-                                })}
-                            />
-                        </Form.Item>
-                        <Checkbox
-                            checked={testCaseEnable}
-                            disabled={testSuitEnable}
-                            onChange={testCaseCheckbox}
+                        <Form
+                            form={testRunForm}
+                            onFinish={submitRunForm}
                         >
-                            Выбрать тест-кейсы
-                        </Checkbox>
-                        <Form.Item name={'caseSelect'}>
-                            <Select
-                                mode="multiple"
-                                disabled={!testCaseEnable}
-                                allowClear
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Пожалуйста, выберите необходимые тест-кейсы"
-                                onChange={event => setTestRunCreate({
-                                    ...testRunCreate,
-                                    testcases: event
-                                })}
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                options={testCase}
-                            />
-                        </Form.Item>
-                        <Checkbox
-                            checked={testSuitEnable}
-                            disabled={testCaseEnable}
-                            onChange={testSuitCheckbox}
-                        >
-                            Выбрать тест-сьюты
-                        </Checkbox>
-                        <Form.Item name={'suitSelect'}>
-                            <Select
-                                mode="multiple"
-                                disabled={!testSuitEnable}
-                                allowClear
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Пожалуйста, выберите необходимые тест-сьюты"
-                                onChange={selectChange}
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                options={testSuitSelect}
-                            />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-                {contextHolder}
-                <TestRunForProjectTable testCase={testCase} testRun={testRun}
-                                        loading={loading}></TestRunForProjectTable>
+                            <Form.Item name={'name'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, введите название'
+                            }]}>
+                                <Input
+                                    placeholder='Название тестового запуска'
+                                    maxLength={100}
+                                    style={{
+                                        marginTop: 5,
+                                    }}
+                                    allowClear
+                                    onChange={event => setTestRunCreate({
+                                        ...testRunCreate,
+                                        name: event.target.value
+                                    })}
+                                ></Input>
+                            </Form.Item>
+                            <Form.Item name={'description'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, введите описание'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={100}
+                                    style={{
+                                        height: 120,
+                                        resize: 'none',
+                                    }}
+                                    placeholder="Описание тестового запуска"
+                                    onChange={event => setTestRunCreate({
+                                        ...testRunCreate,
+                                        description: event.target.value
+                                    })}
+                                />
+                            </Form.Item>
+                            <Checkbox
+                                checked={testCaseEnable}
+                                disabled={testSuitEnable}
+                                onChange={testCaseCheckbox}
+                            >
+                                Выбрать тест-кейсы
+                            </Checkbox>
+                            <Form.Item name={'caseSelect'} rules={[
+                                {
+                                    required: testCaseEnable,
+                                    message: 'Пожалуйста, выберите необходимые тест-кейсы',
+                                },
+                            ]}>
+                                <Select
+                                    mode="multiple"
+                                    disabled={!testCaseEnable}
+                                    allowClear
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    placeholder="Пожалуйста, выберите необходимые тест-кейсы"
+                                    onChange={event => setTestRunCreate({
+                                        ...testRunCreate,
+                                        testcases: event
+                                    })}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    options={testCase}
+                                />
+                            </Form.Item>
+                            <Checkbox
+                                checked={testSuitEnable}
+                                disabled={testCaseEnable}
+                                onChange={testSuitCheckbox}
+                            >
+                                Выбрать тест-сьюты
+                            </Checkbox>
+                            <Form.Item name={'suitSelect'} rules={[
+                                {
+                                    required: testSuitEnable,
+                                    message: 'Пожалуйста, выберите необходимые тест-сьюты',
+                                },
+                            ]}>
+                                <Select
+                                    mode="multiple"
+                                    disabled={!testSuitEnable}
+                                    allowClear
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    placeholder="Пожалуйста, выберите необходимые тест-сьюты"
+                                    onChange={selectChange}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    options={testSuitSelect}
+                                />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    {contextHolder}
+                    <TestRunForProjectTable testCase={testCase} testRun={testRun}
+                                            loading={loading}></TestRunForProjectTable>
+                </div>
             </Space>
         </div>
     );

@@ -1,44 +1,51 @@
-* {
-  font-family: Montserrat;
-}
-.App{
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  font-family: Montserrat;
-}
-.AppHeader{
-  /*height: 50px;*/
-  /*width: 100vw;*/
-  /*display: flex;*/
-  /*justify-content: space-between;*/
-  /*align-items: center;*/
-  /*padding: 4px 20px 4px 12px;*/
-  /*border-bottom: 1px solid rgba(0, 0, 0, 0.15);*/
-}
-.AppFooter{
-  height: 50px;
-  justify-content: space-evenly;
-  align-items: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
+* {
+    font-family: 'Montserrat', sans-serif;
 }
-.SideMenuAndPageContent{
-  display: flex;
-  flex: 1;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background-color: rgba(0, 0, 0, 0.05) ;
+
+.App {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
 }
-.SideMenu{
-  height: 100%;
+
+.AppHeader {
+    /*height: 50px;*/
+    /*width: 100vw;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*align-items: center;*/
+    /*padding: 4px 20px 4px 12px;*/
+    /*border-bottom: 1px solid rgba(0, 0, 0, 0.15);*/
 }
-.SideMenuVertical{
-  height: 100%;
+
+.AppFooter {
+    height: 50px;
+    justify-content: space-evenly;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
 }
-.PageContent{
-  padding-left: 12px;
+
+.SideMenuAndPageContent {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.SideMenu {
+    height: 100%;
+}
+
+.SideMenuVertical {
+    height: 100%;
+}
+
+.PageContent {
+    padding-left: 12px;
 }
 
 

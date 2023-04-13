@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Breadcrumb, Layout, Space, Table, Tag, theme} from "antd";
 import AuthContext from "../context/AuthContext";
-import {getTestCase, getTestRuns} from "../API/API";
+import {getProjects, getSuits, getTestCase, getTestRuns} from "../API/API";
+import {Link} from "react-router-dom";
 
 const {Content} = Layout;
 
@@ -10,9 +11,11 @@ function TestRuns(props) {
     let {authTokens} = useContext(AuthContext)
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+    const sortedTestRuns = [...dataSource].sort((a, b) => b.id - a.id);
     const [testCase, setTestCase] = useState([
         {value: '', label: ''}
     ]);
+    const [projectIds, setProjectIds] = useState([]);
 
     useEffect(() => {
         setLoading(true);
@@ -25,21 +28,91 @@ function TestRuns(props) {
                 return {value: object.id, label: object.title}
             });
             setTestCase([...newTestCase]);
-            console.log(testCase)
         });
 
 
     }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+
+                const [testRunsRes, projectsRes, testCaseRes] =
+                    await Promise.all([
+                        getTestRuns({authTokens}),
+                        getProjects({authTokens}),
+                        getTestCase({authTokens})
+                    ]);
+                const runs = testRunsRes.results;
+                const projects = projectsRes.results;
+
+                const newTestCase = testCaseRes.results.map((object) => {
+                    return {value: object.id, label: object.title}
+                });
+                setTestCase([...newTestCase]);
+
+                setDataSource(runs);
+
+                const filteredProjects = projects.filter(project => {
+                    return runs.find(data => project.name === data.testProject);
+                });
+
+                const filteredProjectIds = filteredProjects.map(project => {
+                    return {
+                        value: project.id,
+                        label: project.name
+                    };
+                });
+
+                setProjectIds(filteredProjectIds);
+                setLoading(false);
+            } catch (error) {
+                console.error("Ошибка", error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const {
         token: {colorBgContainer},
     } = theme.useToken();
 
+    const renderTestRunName = (text, record) => {
+        const filteredProjects = projectIds.filter(project => project.label === record.testProject);
+        if (filteredProjects.length > 0) {
+            return (
+                <Link style={{textDecoration: "none"}}
+                      to={`/projects/${filteredProjects[0].value}/testruns/${record.id}`}>
+                    {text}
+                </Link>
+            );
+        }
+        return '';
+    };
+
+    const renderTestProjectName = (text, record) => {
+        const filteredProjects = projectIds.filter(project => project.label === record.testProject);
+        if (filteredProjects.length > 0) {
+            return (
+                <Link style={{textDecoration: "none"}}
+                      to={`/projects/${filteredProjects[0].value}`}>
+                    {text}
+                </Link>
+            );
+        }
+        return '';
+    };
 
     return (
         <Space size={20} direction="vertical" style={{
             padding: 24,
             minHeight: 360,
             width: '100%',
+            paddingTop: '50px',
+            paddingLeft: '200px',
             backgroundColor: colorBgContainer
         }}>
             <div
@@ -64,6 +137,7 @@ function TestRuns(props) {
                             title: "Название тестового запуска",
                             dataIndex: "name",
                             ellipsis: true,
+                            render: renderTestRunName
                         },
                         {
                             title: "Описание",
@@ -73,6 +147,7 @@ function TestRuns(props) {
                         {
                             title: "Проект, к которому привязан тестовый запуск",
                             dataIndex: "testProject",
+                            render: renderTestProjectName
                         },
                         {
                             title: "Прикрепленные к тестовуму запуски тест-кейсы",
@@ -95,7 +170,7 @@ function TestRuns(props) {
                         }
 
                     ]}
-                    dataSource={dataSource}
+                    dataSource={sortedTestRuns}
                     pagination={{
                         pageSize: 5,
                     }}

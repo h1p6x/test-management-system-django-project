@@ -84,20 +84,23 @@ function GetTestRunsResult(props) {
                 padding: 24,
                 minHeight: 360,
                 width: '100%',
+                paddingTop: '50px',
+                paddingLeft: '200px',
                 backgroundColor: colorBgContainer
             }}>
-                <Breadcrumb
-                    style={{
-                        margin: '20px 0',
-                    }}
-                >
-                    <Breadcrumb.Item>Результаты тестового запуска для каждого прикрепленного
-                        тест-кейса</Breadcrumb.Item>
-                </Breadcrumb>
-                <TestRunResultForTestRunTable testRunTestCase={testRunTestCase} loading={loading}
-                                              testCaseForProject={testCaseForProject}
-                                              testRunResultFromTestCase={testRunResultFromTestCase}>
-                </TestRunResultForTestRunTable>
+                <div style={{marginLeft: '20px'}}>
+                    <Breadcrumb
+                        style={{marginTop: '20px', marginBottom: '20px'}}
+                    >
+                        <Breadcrumb.Item>
+                            Результаты тестового запуска для каждого прикрепленного тест-кейса
+                        </Breadcrumb.Item>
+                    </Breadcrumb>
+                    <TestRunResultForTestRunTable testRunTestCase={testRunTestCase} loading={loading}
+                                                  testCaseForProject={testCaseForProject}
+                                                  testRunResultFromTestCase={testRunResultFromTestCase}>
+                    </TestRunResultForTestRunTable>
+                </div>
             </Space>
         </div>
     );

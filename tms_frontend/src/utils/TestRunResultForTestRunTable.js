@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 function TestRunResultForTestRunTable(props) {
     const {testRunTestCase, loading, testCaseForProject, testRunResultFromTestCase} = props;
-
+    const sortedTestRunTestCase = [...testRunTestCase].sort((a, b) => b.id - a.id);
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -84,7 +84,7 @@ function TestRunResultForTestRunTable(props) {
                     }
                 ]}
                 loading={loading}
-                dataSource={testRunTestCase}
+                dataSource={sortedTestRunTestCase}
                 pagination={{pageSize: 5}}
             ></Table>
         </Space>

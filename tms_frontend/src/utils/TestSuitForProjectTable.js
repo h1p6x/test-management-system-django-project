@@ -3,7 +3,9 @@ import {Link} from "react-router-dom";
 import {Table} from "antd";
 
 function TestSuitForProjectTable(props) {
-    const {testSuit, loading} = props
+    const {testSuit, loading} = props;
+    const sortedTestSuit = [...testSuit].sort((a, b) => b.id - a.id);
+
     return (
         <div>
             <Table
@@ -31,7 +33,7 @@ function TestSuitForProjectTable(props) {
                     },
                 ]}
                 loading={loading}
-                dataSource={testSuit}
+                dataSource={sortedTestSuit}
                 pagination={{pageSize: 3}}
             ></Table>
         </div>

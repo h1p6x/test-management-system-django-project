@@ -111,7 +111,7 @@ export const closeProject = async ({authTokens, id}) => {
             'Authorization': 'Bearer ' + String(authTokens.access)
         },
         body: JSON.stringify({})
-    }).then((res) => res.json())
+    }).then((res) => res)
 };
 
 export const createTestSuit = async ({authTokens, testSuitCreate, projectId}) => {

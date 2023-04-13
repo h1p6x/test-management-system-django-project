@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 
 function TestRunForProjectTable(props) {
     const {testCase, testRun, loading} = props;
+    const sortedTestRun = [...testRun].sort((a, b) => b.id - a.id);
 
     return (
         <div>
@@ -48,7 +49,7 @@ function TestRunForProjectTable(props) {
                     }
                 ]}
                 loading={loading}
-                dataSource={testRun}
+                dataSource={sortedTestRun}
                 pagination={{pageSize: 3}}
             ></Table>
         </div>

@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 
 function TestCaseForTestSuitTable(props) {
     const {dataSource, loading, getColumnSearchProps} = props;
+    const sortedTestCase = [...dataSource].sort((a, b) => b.id - a.id);
 
     return (
         <div>
@@ -36,7 +37,7 @@ function TestCaseForTestSuitTable(props) {
                                 color = 'orange';
                             } else if (priority === 'High') {
                                 color = 'volcano';
-                            } else if (priority == 'Highest') {
+                            } else if (priority === 'Highest') {
                                 color = 'red';
                             }
                             return (
@@ -68,7 +69,7 @@ function TestCaseForTestSuitTable(props) {
                         ellipsis: true,
                     },
                 ]}
-                dataSource={dataSource}
+                dataSource={sortedTestCase}
                 pagination={{
                     pageSize: 5,
                 }}

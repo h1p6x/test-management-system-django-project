@@ -17,6 +17,8 @@ function GetSuitInfoById() {
         {title: '', priority: '', estimate: '', precondition: '', steps: '', expected_result: ''}
     ]);
     const projectIdInt = +projectId;
+    const testSuitIdInt = +testSuitId;
+
     const [testProject, setTestProject] = useState({
         id: '', status: '', name: ''
     });
@@ -139,15 +141,12 @@ function GetSuitInfoById() {
     const submitCaseForm = async () => {
         createTestCase({authTokens, testCaseCreate, projectId, testSuitId}).then((response) => {
             if (response.status === 201) {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Тест-кейс успешно добавлен'
-                });
+                messageApi.success('Тест-кейс успешно добавлен');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Произошла непредвиденная ошибка'
-                });
+                messageApi.error('Произошла непредвиденная ошибка');
             }
         });
         setTestCaseCreate({
@@ -201,134 +200,165 @@ function GetSuitInfoById() {
         fetchData();
     }, [projectId, authTokens, testSuitId]);
 
+    const testSuitFindById = testSuit.find(testSuit => testSuit.id === testSuitIdInt);
+
     return (
         <div>
             <Space size={20} direction="vertical" style={{
                 padding: 24,
                 minHeight: 360,
                 width: '100%',
+                paddingTop: '50px',
+                paddingLeft: '200px',
                 backgroundColor: colorBgContainer
             }}>
-                <Breadcrumb
-                    style={{
-                        margin: '20px 0',
-                    }}
-                >
-                    <Breadcrumb.Item>{dataSource.map((object) => (
-                        object.testSuit
-                    )).slice(0, 1)}</Breadcrumb.Item>
-                    <Breadcrumb.Item>Тест-кейсы</Breadcrumb.Item>
-                </Breadcrumb>
-                <Button type="primary" onClick={showCaseModal} style={{
-                    float: 'right', display: testProject.status ===
-                    'Open' ? 'block' : 'none'
-                }}>
-                    Добавить тест-кейс
-                </Button>
-                <Modal title='Создание нового тест-кейса' open={isModalCaseOpen} onOk={testCaseForm.submit}
-                       onCancel={caseHandleCancel}>
-                    <Form
-                        form={testCaseForm}
-                        onFinish={submitCaseForm}
+                <div style={{marginLeft: '20px'}}>
+                    <Breadcrumb
+                        style={{marginTop: '20px', marginBottom: '20px'}}
                     >
-                        <Form.Item name={'name'}>
-                            <Input
-                                placeholder='Название тест-кейса'
-                                maxLength={255}
-                                style={{
-                                    marginTop: 5,
-                                }}
-                                allowClear
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    title: event.target.value
-                                })}
-                            ></Input>
-                        </Form.Item>
-                        <Form.Item name={'priority'}>
-                            <Select
-                                allowClear
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Пожалуйста, выберите приоритет тест-кейса"
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    priority: event
-                                })}
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                options={prioritySelect}
-                            />
-                        </Form.Item>
-                        <Form.Item name={'estimate'}>
-                            <TextArea
-                                showCount
-                                maxLength={200}
-                                style={{
-                                    height: 90,
-                                    resize: 'none',
-                                }}
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    estimate: event.target.value
-                                })}
-                                placeholder="Укажите оценку трудозатрат"
-                            />
-                        </Form.Item>
-                        <Form.Item name={'precondition'}>
-                            <TextArea
-                                showCount
-                                maxLength={500}
-                                style={{
-                                    height: 100,
-                                    resize: 'none',
-                                }}
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    precondition: event.target.value
-                                })}
-                                placeholder="Укажите предусловие для тест-кейса"
-                            />
-                        </Form.Item>
-                        <Form.Item name={'steps'}>
-                            <TextArea
-                                showCount
-                                maxLength={500}
-                                style={{
-                                    height: 100,
-                                    resize: 'none',
-                                }}
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    steps: event.target.value
-                                })}
-                                placeholder="Укажите шаги прохождения тест-кейса"
-                            />
-                        </Form.Item>
-                        <Form.Item name={'expected_result'}>
-                            <TextArea
-                                showCount
-                                maxLength={500}
-                                style={{
-                                    height: 100,
-                                    resize: 'none',
-                                }}
-                                onChange={event => setTestCaseCreate({
-                                    ...testCaseCreate,
-                                    expected_result: event.target.value
-                                })}
-                                placeholder="Укажите ожидаемый результат"
-                            />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-                {contextHolder}
-                <TestCaseForTestSuitTable dataSource={dataSource} loading={loading}
-                                          getColumnSearchProps={getColumnSearchProps}>
+                        {/*<Breadcrumb.Item>{dataSource.map((object) => (*/}
+                        {/*    object.testSuit*/}
+                        {/*)).slice(0, 1)}</Breadcrumb.Item>*/}
+                        {testSuitFindById && testSuitFindById.name ? (
+                            <Breadcrumb.Item>
+                                {testSuitFindById.name}
+                            </Breadcrumb.Item>
+                        ) : null}
+                        <Breadcrumb.Item>Тест-кейсы</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Button type="primary" onClick={showCaseModal} style={{
+                        float: 'right', display: testProject.status ===
+                        'Open' ? 'block' : 'none', marginBottom: '30px'
+                    }}>
+                        Добавить тест-кейс
+                    </Button>
+                    <Modal title="Создание нового тест-кейса" open={isModalCaseOpen} onOk={testCaseForm.submit}
+                           onCancel={caseHandleCancel}
+                           okText="Добавить"
+                           cancelText="Отмена"
+                           cancelButtonProps={{ style: { float: 'right', marginLeft: "5px"} }}
+                    >
+                        <Form
+                            form={testCaseForm}
+                            onFinish={submitCaseForm}
+                        >
+                            <Form.Item name={'name'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, введите название'
+                            }]}>
+                                <Input
+                                    placeholder='Название тест-кейса'
+                                    maxLength={255}
+                                    style={{
+                                        marginTop: 5,
+                                    }}
+                                    allowClear
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        title: event.target.value
+                                    })}
+                                ></Input>
+                            </Form.Item>
+                            <Form.Item name={'priority'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, выберите приоритет'
+                            }]}>
+                                <Select
+                                    allowClear
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    placeholder="Пожалуйста, выберите приоритет тест-кейса"
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        priority: event
+                                    })}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    options={prioritySelect}
+                                />
+                            </Form.Item>
+                            <Form.Item name={'estimate'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, укажите оценку трудозатрат'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={200}
+                                    style={{
+                                        height: 90,
+                                        resize: 'none',
+                                    }}
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        estimate: event.target.value
+                                    })}
+                                    placeholder="Укажите оценку трудозатрат"
+                                />
+                            </Form.Item>
+                            <Form.Item name={'precondition'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, укажите предусловие'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={500}
+                                    style={{
+                                        height: 100,
+                                        resize: 'none',
+                                    }}
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        precondition: event.target.value
+                                    })}
+                                    placeholder="Укажите предусловие для тест-кейса"
+                                />
+                            </Form.Item>
+                            <Form.Item name={'steps'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, укажите шаги тест-кейса'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={500}
+                                    style={{
+                                        height: 100,
+                                        resize: 'none',
+                                    }}
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        steps: event.target.value
+                                    })}
+                                    placeholder="Укажите шаги прохождения тест-кейса"
+                                />
+                            </Form.Item>
+                            <Form.Item name={'expected_result'} rules={[{
+                                required: true,
+                                message: 'Пожалуйста, укажите ожидаемый результат'
+                            }]}>
+                                <TextArea
+                                    showCount
+                                    maxLength={500}
+                                    style={{
+                                        height: 100,
+                                        resize: 'none',
+                                    }}
+                                    onChange={event => setTestCaseCreate({
+                                        ...testCaseCreate,
+                                        expected_result: event.target.value
+                                    })}
+                                    placeholder="Укажите ожидаемый результат"
+                                />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    {contextHolder}
+                    <TestCaseForTestSuitTable dataSource={dataSource} loading={loading}
+                                              getColumnSearchProps={getColumnSearchProps}>
 
-                </TestCaseForTestSuitTable>
+                    </TestCaseForTestSuitTable>
+                </div>
             </Space>
         </div>
     );

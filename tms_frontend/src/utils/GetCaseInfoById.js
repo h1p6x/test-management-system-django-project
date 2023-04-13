@@ -45,15 +45,9 @@ function GetCaseInfoById(props) {
             testCaseId, testCaseDetail
         }).then((response) => {
             if (response.status === 200) {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Тест-кейс успешно отредактирован'
-                });
+                messageApi.success('Тест-кейс успешно отредактирован');
             } else {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Произошла непредвиденная ошибка'
-                });
+                messageApi.error('Произошла непредвиденная ошибка');
             }
         });
     };
@@ -65,10 +59,10 @@ function GetCaseInfoById(props) {
                 testSuitId, testCaseId
             });
             if (response.status === 204) {
-                message.success('Тест-кейс успешно удален'); // Используем message.success() для отображения сообщения об успешном удалении
+                message.success('Тест-кейс успешно удален');
                 navigate(`/projects/${projectId}/testsuits/${testSuitId}`);
             } else {
-                message.error('Произошла непредвиденная ошибка'); // Используем message.error() для отображения сообщения об ошибке
+                message.error('Произошла непредвиденная ошибка');
             }
         } catch (error) {
             console.error(error);
@@ -162,7 +156,6 @@ function GetCaseInfoById(props) {
 
 
     return (
-        <div style={{width: '100%'}}>
             <Space
                 size={20}
                 direction="vertical"
@@ -176,129 +169,132 @@ function GetCaseInfoById(props) {
                     alignItems: "stretch",
                 }}
             >
-                <Breadcrumb
-                    style={{
-                        margin: '20px 0',
-                    }}
-                >
-                    <Breadcrumb.Item>Тест-кейсы</Breadcrumb.Item>
-                    <Breadcrumb.Item>{testCaseDetail.title}</Breadcrumb.Item>
-                </Breadcrumb>
-                <div style={{
-                    display: testProject.status ===
-                    'Open' ? 'block' : 'none', justifyContent: 'space-between', float: 'right'
-                }}>
-                    {isEditing ? (
-                        <Button type="primary" style={{marginRight: '10px'}} onClick={() => {
-                            setIsEditing(false);
-                            submitCaseForm();
-                        }}>
-                            Сохранить изменения
-                        </Button>
-                    ) : (
-                        <Button type="dashed" danger
-                                style={{marginRight: '10px', borderColor: 'orange', color: 'orange'}}
-                                onClick={() => setIsEditing(true)}>
-                            Редактировать тест-кейс
-                        </Button>
-                    )}
-                    <Popconfirm title="Уверены, что хотите удалить тест-кейс?"
-                                onConfirm={() => testCaseDeleting()}>
-                        <Button type="primary" danger>
-                            Удалить тест-кейс
-                        </Button>
-                    </Popconfirm>
+                <div style={{marginLeft: '200px'}}>
+                    <Breadcrumb
+                        style={{marginTop: '50px', marginBottom: '20px'}}
+                    >
+                        <Breadcrumb.Item>Тест-кейсы</Breadcrumb.Item>
+                        <Breadcrumb.Item>{testCaseDetail.title}</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <div style={{
+                        display: testProject.status ===
+                        'Open' ? 'block' : 'none', justifyContent: 'space-between', float: 'right',
+                        marginBottom: '20px'
+                    }}>
+                        {isEditing ? (
+                            <Button type="primary" style={{marginRight: '10px'}} onClick={() => {
+                                setIsEditing(false);
+                                submitCaseForm();
+                            }}>
+                                Сохранить изменения
+                            </Button>
+                        ) : (
+                            <Button type="dashed" danger
+                                    style={{marginRight: '10px', borderColor: 'orange', color: 'orange'}}
+                                    onClick={() => setIsEditing(true)}>
+                                Редактировать тест-кейс
+                            </Button>
+                        )}
+                        <Popconfirm title="Уверены, что хотите удалить тест-кейс?"
+                                    okText="Удалить"
+                                    cancelText="Отмена"
+                                    cancelButtonProps={{ style: { float: 'right' } }}
+                                    onConfirm={() => testCaseDeleting()}>
+                            <Button type="primary" danger>
+                                Удалить тест-кейс
+                            </Button>
+                        </Popconfirm>
+                    </div>
+                    {contextHolder}
+                    <Form
+                        form={testCaseEditForm}
+                    >
+                        <Input
+                            placeholder='Название тест-кейса'
+                            maxLength={255}
+                            style={{
+                                marginTop: 5,
+                                width: '100%',
+                            }}
+                            allowClear
+                            disabled={!isEditing}
+                            value={testCaseDetail.title}
+                            onChange={handleTitleChange}
+                        />
+                        <Select
+                            allowClear
+                            style={{
+                                marginTop: 30,
+                                width: '100%',
+                            }}
+                            placeholder="Пожалуйста, выберите приоритет тест-кейса"
+                            disabled={!isEditing}
+                            value={testCaseDetail.priority}
+                            onChange={handlePriorityChange}
+                            filterOption={(input, option) =>
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={prioritySelect}
+                        />
+                        <TextArea
+                            showCount
+                            maxLength={200}
+                            style={{
+                                height: 90,
+                                marginTop: 30,
+                                resize: 'none',
+                                width: '100%',
+                            }}
+                            disabled={!isEditing}
+                            value={testCaseDetail.estimate}
+                            onChange={handleEstimateChange}
+                            placeholder="Укажите оценку трудозатрат"
+                        />
+                        <TextArea
+                            showCount
+                            maxLength={500}
+                            style={{
+                                height: 100,
+                                marginTop: 30,
+                                resize: 'none',
+                            }}
+                            disabled={!isEditing}
+                            value={testCaseDetail.precondition}
+                            onChange={handlePreconditionChange}
+                            placeholder="Укажите предусловие для тест-кейса"
+                        />
+                        <TextArea
+                            showCount
+                            maxLength={500}
+                            style={{
+                                height: 100,
+                                marginTop: 30,
+                                resize: 'none',
+                                width: '100%',
+                            }}
+                            disabled={!isEditing}
+                            value={testCaseDetail.steps}
+                            onChange={handleStepsChange}
+                            placeholder="Укажите шаги прохождения тест-кейса"
+                        />
+                        <TextArea
+                            showCount
+                            maxLength={500}
+                            style={{
+                                height: 100,
+                                marginTop: 30,
+                                resize: 'none',
+                                width: '100%',
+                            }}
+                            disabled={!isEditing}
+                            value={testCaseDetail.expected_result}
+                            onChange={handleExpectedResultChange}
+                            placeholder="Укажите ожидаемый результат"
+                        />
+                    </Form>
+                    {contextHolder}
                 </div>
-                {contextHolder}
-                <Form
-                    form={testCaseEditForm}
-                >
-                    <Input
-                        placeholder='Название тест-кейса'
-                        maxLength={255}
-                        style={{
-                            marginTop: 5,
-                            width: '100%',
-                        }}
-                        allowClear
-                        disabled={!isEditing}
-                        value={testCaseDetail.title}
-                        onChange={handleTitleChange}
-                    />
-                    <Select
-                        allowClear
-                        style={{
-                            marginTop: 30,
-                            width: '100%',
-                        }}
-                        placeholder="Пожалуйста, выберите приоритет тест-кейса"
-                        disabled={!isEditing}
-                        value={testCaseDetail.priority}
-                        onChange={handlePriorityChange}
-                        filterOption={(input, option) =>
-                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={prioritySelect}
-                    />
-                    <TextArea
-                        showCount
-                        maxLength={200}
-                        style={{
-                            height: 90,
-                            marginTop: 30,
-                            resize: 'none',
-                            width: '100%',
-                        }}
-                        disabled={!isEditing}
-                        value={testCaseDetail.estimate}
-                        onChange={handleEstimateChange}
-                        placeholder="Укажите оценку трудозатрат"
-                    />
-                    <TextArea
-                        showCount
-                        maxLength={500}
-                        style={{
-                            height: 100,
-                            marginTop: 30,
-                            resize: 'none',
-                        }}
-                        disabled={!isEditing}
-                        value={testCaseDetail.precondition}
-                        onChange={handlePreconditionChange}
-                        placeholder="Укажите предусловие для тест-кейса"
-                    />
-                    <TextArea
-                        showCount
-                        maxLength={500}
-                        style={{
-                            height: 100,
-                            marginTop: 30,
-                            resize: 'none',
-                            width: '100%',
-                        }}
-                        disabled={!isEditing}
-                        value={testCaseDetail.steps}
-                        onChange={handleStepsChange}
-                        placeholder="Укажите шаги прохождения тест-кейса"
-                    />
-                    <TextArea
-                        showCount
-                        maxLength={500}
-                        style={{
-                            height: 100,
-                            marginTop: 30,
-                            resize: 'none',
-                            width: '100%',
-                        }}
-                        disabled={!isEditing}
-                        value={testCaseDetail.expected_result}
-                        onChange={handleExpectedResultChange}
-                        placeholder="Укажите ожидаемый результат"
-                    />
-                </Form>
-                {contextHolder}
             </Space>
-        </div>
     );
 }
 

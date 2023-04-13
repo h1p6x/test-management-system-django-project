@@ -29,12 +29,12 @@ function GetTestRunResultForTestCase(props) {
 
     const [testRunResultFromTestCase, setTestRunResultFromTestCase] =
         useState({
-        value: '',
-        status: '',
-        user: '',
-        comment: '',
-        trrDate: ''
-    });
+            value: '',
+            status: '',
+            user: '',
+            comment: '',
+            trrDate: ''
+        });
     const [testProject, setTestProject] = useState({
         id: '', status: '', name: ''
     });
@@ -71,15 +71,12 @@ function GetTestRunResultForTestCase(props) {
             testRunResultCreate
         }).then((response) => {
             if (response.status === 201) {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Результат тестового запуска успешно добавлен'
-                });
+                messageApi.success('Результат тестового запуска успешно добавлен');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Произошла непредвиденная ошибка'
-                });
+                messageApi.error('Произошла непредвиденная ошибка');
             }
         });
         setTestRunResultCreate({status: '', comment: ''});
@@ -199,33 +196,32 @@ function GetTestRunResultForTestCase(props) {
         testProjectGet();
 
     }, [projectId, testRunId, testCaseId, authTokens]);
-
+    console.log(testRunResultFromTestCase);
     return (
-        <div style={{width: '100%'}}>
-            <Space
-                size={20}
-                direction="vertical"
-                style={{
-                    padding: 24,
-                    minHeight: 360,
-                    width: "100%",
-                    backgroundColor: colorBgContainer,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "stretch",
-                }}
-            >
+        <Space
+            size={20}
+            direction="vertical"
+            style={{
+                padding: 24,
+                minHeight: 360,
+                width: "100%",
+                backgroundColor: colorBgContainer,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "stretch",
+            }}
+        >
+            <div style={{marginLeft: '200px'}}>
                 <Breadcrumb
-                    style={{
-                        margin: '20px 0',
-                    }}
+                    style={{marginTop: '50px', marginBottom: '20px'}}
                 >
                     <Breadcrumb.Item>Тест-кейс в рамках тестового запуска</Breadcrumb.Item>
                     <Breadcrumb.Item>{testCaseForProject.title}</Breadcrumb.Item>
                 </Breadcrumb>
                 <div style={{
                     display: testProject.status ===
-                    'Open' ? 'block' : 'none', justifyContent: 'space-between', float: 'right'
+                    'Open' ? 'block' : 'none', justifyContent: 'space-between', float: 'right',
+                    marginBottom: '20px'
                 }}>
                     {testRunResultFromTestCase.status !== 'Passed' &&
                         testRunResultFromTestCase.status !== 'Failed' &&
@@ -239,12 +235,19 @@ function GetTestRunResultForTestCase(props) {
                 <Modal title='Создание результата тествого запуска'
                        open={isModalRunResultOpen}
                        onOk={testRunResultForm.submit}
-                       onCancel={runResultHandleCancel}>
+                       onCancel={runResultHandleCancel}
+                       okText="Добавить"
+                       cancelText="Отмена"
+                       cancelButtonProps={{ style: { float: 'right', marginLeft: "5px"} }}
+                >
                     <Form
                         form={testRunResultForm}
                         onFinish={submitRunResultForm}
                     >
-                        <Form.Item name={'status'}>
+                        <Form.Item name={'status'} rules={[{
+                            required: true,
+                            message: 'Пожалуйста, статус прохождения тест-кейса'
+                        }]}>
                             <Select
                                 allowClear
                                 style={{
@@ -261,7 +264,10 @@ function GetTestRunResultForTestCase(props) {
                                 options={testRunStatusSelect}
                             />
                         </Form.Item>
-                        <Form.Item name={'comment'}>
+                        <Form.Item name={'comment'} rules={[{
+                            required: true,
+                            message: 'Пожалуйста, укажите комментарий'
+                        }]}>
                             <TextArea
                                 showCount
                                 maxLength={500}
@@ -280,7 +286,7 @@ function GetTestRunResultForTestCase(props) {
                 </Modal>
                 {contextHolder}
                 {['Passed', 'Failed'].includes(testRunResultFromTestCase.status) && (
-                    <div>
+                    <div style={{marginBottom: '20px'}}>
                         <Table
                             columns={[
                                 {
@@ -393,8 +399,8 @@ function GetTestRunResultForTestCase(props) {
                         placeholder="Укажите ожидаемый результат"
                     />
                 </Form>
-            </Space>
-        </div>
+            </div>
+        </Space>
     );
 }
 
