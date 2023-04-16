@@ -1,5 +1,18 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Breadcrumb, Button, Card, Layout, message, Popconfirm, Space, Statistic, Table, Tag, theme} from "antd";
+import {
+    Breadcrumb,
+    Button,
+    Card,
+    Layout,
+    message,
+    Pagination,
+    Popconfirm,
+    Space,
+    Statistic,
+    Table,
+    Tag,
+    theme
+} from "antd";
 import AuthContext from "../context/AuthContext";
 import {closeProject, getProjects, getSuits, getTestCase, getTestRuns} from "../API/API";
 
@@ -20,6 +33,13 @@ export const ProjectsInfo = () => {
     const [loading, setLoading] = useState(false);
     const {authTokens} = useContext(AuthContext)
     const [messageApi, contextHolder] = message.useMessage();
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
+
 
     useEffect(() => {
         setLoading(true);
@@ -54,62 +74,73 @@ export const ProjectsInfo = () => {
                 <Breadcrumb.Item>Существующие проекты</Breadcrumb.Item>
             </Breadcrumb>
             {/*<div style={{height:'500px', overflowY: 'auto'}}>*/}
-                <Table
-                    columns={[
-                        {
-                            title: "Название проекта",
-                            dataIndex: "name",
-                            render: (text, {id}) => {
-                                return (
-                                    <Link to={`/projects/${id}`} style={{textDecoration: "none"}}>
-                                        {text}
-                                    </Link>
-                                );
-                            }
-                        },
-                        {
-                            title: 'Статус',
-                            dataIndex: 'status',
-                            key: 'status',
-                            render: (_, {status}) => {
-                                let color;
-                                (status === 'Открыт') ? color = 'green' : color = 'volcano';
-                                return (
-                                    <Tag color={color} key={status}>
-                                        {status.toUpperCase()}
-                                    </Tag>
-                                );
-                            }
-                        },
-                        {
-                            title: "Дата создания",
-                            dataIndex: "creation_date",
-                        },
-                        {
-                            title: "Дата последнего редактирования",
-                            dataIndex: "modification_date",
-                        },
-                        {
-                            title: "Изменение статуса проекта",
-                            dataIndex: ' ',
-                            render: (_, {id, status}) =>
-                                dataSource.length >= 1 && (status === 'Открыт') ? (
-                                    <Popconfirm title="Уверены, что хотите закрыть проект?"
-                                                okText="Закрыть"
-                                                cancelText="Отмена"
-                                                cancelButtonProps={{ style: { float: 'right' } }}
-                                                onConfirm={() => projectClose({id})}>
-                                        <Button>Закрыть проект</Button>
-                                    </Popconfirm>
-                                ) : <a>Проект выполнен</a>,
-                        },
-                    ]}
-                    loading={loading}
-                    dataSource={sortedTestProject}
-                    pagination={{pageSize: 5}}
-                    className="ant-table-wrapper"
-                    bodyStyle={{ maxHeight: '500px', overflowY: 'auto' }}
-                ></Table>
+            <Table
+                columns={[
+                    {
+                        title: "Название проекта",
+                        dataIndex: "name",
+                        render: (text, {id}) => {
+                            return (
+                                <Link to={`/projects/${id}`} style={{textDecoration: "none"}}>
+                                    {text}
+                                </Link>
+                            );
+                        }
+                    },
+                    {
+                        title: 'Статус',
+                        dataIndex: 'status',
+                        key: 'status',
+                        render: (_, {status}) => {
+                            let color;
+                            (status === 'Открыт') ? color = 'green' : color = 'volcano';
+                            return (
+                                <Tag color={color} key={status}>
+                                    {status.toUpperCase()}
+                                </Tag>
+                            );
+                        }
+                    },
+                    {
+                        title: "Дата создания",
+                        dataIndex: "creation_date",
+                    },
+                    {
+                        title: "Дата последнего редактирования",
+                        dataIndex: "modification_date",
+                    },
+                    {
+                        title: "Изменение статуса проекта",
+                        dataIndex: ' ',
+                        render: (_, {id, status}) =>
+                            dataSource.length >= 1 && (status === 'Открыт') ? (
+                                <Popconfirm title="Уверены, что хотите закрыть проект?"
+                                            okText="Закрыть"
+                                            cancelText="Отмена"
+                                            cancelButtonProps={{style: {float: 'right'}}}
+                                            onConfirm={() => projectClose({id})}>
+                                    <Button>Закрыть проект</Button>
+                                </Popconfirm>
+                            ) : <a>Проект выполнен</a>,
+                    },
+                ]}
+                loading={loading}
+                dataSource={sortedTestProject.slice(
+                    (currentPage - 1) * pageSize,
+                    currentPage * pageSize
+                )}
+                pagination={false}
+                size="large"
+                style={{minHeight: "500px", overflowY: "scroll"}}
+            ></Table>
+            <div style={{marginTop: "16px", textAlign: "right"}}>
+                <Pagination
+                    current={currentPage}
+                    total={sortedTestProject.length}
+                    pageSize={pageSize}
+                    onChange={handlePaginationChange}
+                />
+            </div>
             {/*</div>*/}
         </>
     );

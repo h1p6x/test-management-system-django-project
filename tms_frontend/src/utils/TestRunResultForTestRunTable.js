@@ -1,10 +1,18 @@
-import React from 'react';
-import {Space, Table, Tag, theme} from "antd";
+import React, {useState} from 'react';
+import {Pagination, Space, Table, Tag, theme} from "antd";
 import {Link} from "react-router-dom";
 
 function TestRunResultForTestRunTable(props) {
     const {testRunTestCase, loading, testCaseForProject, testRunResultFromTestCase} = props;
     const sortedTestRunTestCase = [...testRunTestCase].sort((a, b) => b.id - a.id);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
+
+
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -84,9 +92,22 @@ function TestRunResultForTestRunTable(props) {
                     }
                 ]}
                 loading={loading}
-                dataSource={sortedTestRunTestCase}
-                pagination={{pageSize: 5}}
+                dataSource={sortedTestRunTestCase.slice(
+                    (currentPage - 1) * pageSize,
+                    currentPage * pageSize
+                )}
+                pagination={false}
+                size="large"
+                style={{ minHeight: "400px", overflowY: "scroll" }}
             ></Table>
+            <div style={{ marginTop: "16px", textAlign: "right" }}>
+                <Pagination
+                    current={currentPage}
+                    total={sortedTestRunTestCase.length}
+                    pageSize={pageSize}
+                    onChange={handlePaginationChange}
+                />
+            </div>
         </Space>
     );
 }

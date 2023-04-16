@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Breadcrumb, Layout, Space, Table, theme} from "antd";
+import {Breadcrumb, Layout, Pagination, Space, Table, theme} from "antd";
 import AuthContext from "../context/AuthContext";
 import {getProjects, getSuits} from "../API/API";
 import {Link} from "react-router-dom";
@@ -12,6 +12,12 @@ function TestSuits(props) {
     const [dataSource, setDataSource] = useState([]);
     const sortedTestSuits = [...dataSource].sort((a, b) => b.id - a.id);
     const [projectIds, setProjectIds] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
 
     // useEffect(() => {
     //     setLoading(true);
@@ -154,7 +160,6 @@ function TestSuits(props) {
                     <Breadcrumb.Item>Существующие тест-сьюты</Breadcrumb.Item>
                 </Breadcrumb>
                 <Table
-                    loading={loading}
                     columns={[
                         {
                             title: "Название тест-сьюта",
@@ -174,11 +179,23 @@ function TestSuits(props) {
                         }
 
                     ]}
-                    dataSource={sortedTestSuits}
-                    pagination={{
-                        pageSize: 5,
-                    }}
+                    loading={loading}
+                    dataSource={sortedTestSuits.slice(
+                        (currentPage - 1) * pageSize,
+                        currentPage * pageSize
+                    )}
+                    pagination={false}
+                    size="large"
+                    style={{minHeight: "400px", overflowY: "scroll"}}
                 ></Table>
+                <div style={{ marginTop: "16px", textAlign: "right" }}>
+                    <Pagination
+                        current={currentPage}
+                        total={sortedTestSuits.length}
+                        pageSize={pageSize}
+                        onChange={handlePaginationChange}
+                    />
+                </div>
             </div>
         </Space>
     );

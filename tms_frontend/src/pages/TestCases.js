@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Breadcrumb, Layout, Space, Table, Tag, theme} from "antd";
+import {Breadcrumb, Layout, Pagination, Space, Table, Tag, theme} from "antd";
 import AuthContext from "../context/AuthContext";
 import {getProjects, getSuits, getTestCase} from "../API/API";
 import {Link} from "react-router-dom";
@@ -16,6 +16,12 @@ function TestCases(props) {
     const sortedTestCase = [...dataSource].sort((a, b) => b.id - a.id);
     const [suitIds, setSuitIds] = useState([]);
     const [projectIds, setProjectIds] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
 
     // useEffect(() => {
     //     setLoading(true);
@@ -193,7 +199,6 @@ function TestCases(props) {
                     <Breadcrumb.Item>Существующие тест-кейсы</Breadcrumb.Item>
                 </Breadcrumb>
                 <Table
-                    loading={loading}
                     columns={[
                         {
                             title: "Название тест-кейса",
@@ -250,11 +255,23 @@ function TestCases(props) {
                             render: renderTestSuitName
                         },
                     ]}
-                    dataSource={sortedTestCase}
-                    pagination={{
-                        pageSize: 5,
-                    }}
+                    loading={loading}
+                    dataSource={sortedTestCase.slice(
+                        (currentPage - 1) * pageSize,
+                        currentPage * pageSize
+                    )}
+                    pagination={false}
+                    size="large"
+                    style={{minHeight: "600px", overflowY: "scroll"}}
                 ></Table>
+                <div style={{ marginTop: "16px", textAlign: "right" }}>
+                    <Pagination
+                        current={currentPage}
+                        total={sortedTestCase.length}
+                        pageSize={pageSize}
+                        onChange={handlePaginationChange}
+                    />
+                </div>
             </div>
         </Space>
     );

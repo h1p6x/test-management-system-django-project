@@ -1,15 +1,20 @@
-import React from 'react';
-import {Table, Tag} from "antd";
+import React, {useState} from 'react';
+import {Pagination, Table, Tag} from "antd";
 import {Link} from "react-router-dom";
 
 function TestCaseForTestSuitTable(props) {
     const {dataSource, loading, getColumnSearchProps} = props;
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
     const sortedTestCase = [...dataSource].sort((a, b) => b.id - a.id);
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div>
             <Table
-                loading={loading}
                 columns={[
                     {
                         title: "Название тест-кейса",
@@ -69,11 +74,23 @@ function TestCaseForTestSuitTable(props) {
                         ellipsis: true,
                     },
                 ]}
-                dataSource={sortedTestCase}
-                pagination={{
-                    pageSize: 5,
-                }}
+                loading={loading}
+                dataSource={sortedTestCase.slice(
+                    (currentPage - 1) * pageSize,
+                    currentPage * pageSize
+                )}
+                pagination={false}
+                size="large"
+                style={{ minHeight: "400px", overflowY: "scroll" }}
             ></Table>
+            <div style={{ marginTop: "16px", textAlign: "right" }}>
+                <Pagination
+                    current={currentPage}
+                    total={sortedTestCase.length}
+                    pageSize={pageSize}
+                    onChange={handlePaginationChange}
+                />
+            </div>
         </div>
     );
 }

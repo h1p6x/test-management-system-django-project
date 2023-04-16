@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
-import {Table} from "antd";
+import {Pagination, Table} from "antd";
 
 function TestSuitForProjectTable(props) {
     const {testSuit, loading} = props;
     const sortedTestSuit = [...testSuit].sort((a, b) => b.id - a.id);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
+
+    const handlePaginationChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div>
@@ -33,9 +39,22 @@ function TestSuitForProjectTable(props) {
                     },
                 ]}
                 loading={loading}
-                dataSource={sortedTestSuit}
-                pagination={{pageSize: 3}}
+                dataSource={sortedTestSuit.slice(
+                    (currentPage - 1) * pageSize,
+                    currentPage * pageSize
+                )}
+                pagination={false}
+                size="large"
+                style={{ minHeight: "400px", overflowY: "scroll" }}
             ></Table>
+            <div style={{ marginTop: "16px", textAlign: "right" }}>
+                <Pagination
+                    current={currentPage}
+                    total={sortedTestSuit.length}
+                    pageSize={pageSize}
+                    onChange={handlePaginationChange}
+                />
+            </div>
         </div>
     );
 }

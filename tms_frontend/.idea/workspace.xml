@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ec350b06-32ad-440e-ab5e-ba46cbc15bbb" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Mj3B1CrGp8KZpTBpbi4YqWSGQb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "tms__frontend",
+    "last_opened_file_path": "D:/webstorm_project/tms_frontend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "ts.external.directory.path": "C:\\Users\\hipex\\AppData\\Local\\JetBrains\\Toolbox\\apps\\WebStorm\\ch-0\\223.8836.50\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\webstorm_project\tms_frontend\src\utils" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ec350b06-32ad-440e-ab5e-ba46cbc15bbb" name="Changes" comment="" />
+      <created>1678267024418</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1678267024418</updated>
+      <workItem from="1678267025606" duration="12940000" />
+      <workItem from="1678344613451" duration="21059000" />
+      <workItem from="1678428200435" duration="17330000" />
+      <workItem from="1678519467076" duration="14729000" />
+      <workItem from="1678604217155" duration="15294000" />
+      <workItem from="1678804239717" duration="1327000" />
+      <workItem from="1678860747670" duration="12254000" />
+      <workItem from="1678888854254" duration="6420000" />
+      <workItem from="1678945738251" duration="29532000" />
+      <workItem from="1679118678289" duration="19448000" />
+      <workItem from="1679207166670" duration="5542000" />
+      <workItem from="1679314040592" duration="6572000" />
+      <workItem from="1679378062954" duration="14147000" />
+      <workItem from="1679462595787" duration="442000" />
+      <workItem from="1679484577287" duration="7100000" />
+      <workItem from="1679826813063" duration="1180000" />
+      <workItem from="1679912137405" duration="9654000" />
+      <workItem from="1679989947220" duration="12797000" />
+      <workItem from="1680073717501" duration="13587000" />
+      <workItem from="1680154917852" duration="96000" />
+      <workItem from="1680155032124" duration="16073000" />
+      <workItem from="1680246039999" duration="392000" />
+      <workItem from="1680252607580" duration="9953000" />
+      <workItem from="1680330301035" duration="11868000" />
+      <workItem from="1680414706384" duration="11930000" />
+      <workItem from="1680513352183" duration="12399000" />
+      <workItem from="1680590738269" duration="10483000" />
+      <workItem from="1680617167859" duration="39000" />
+      <workItem from="1680686707329" duration="13572000" />
+      <workItem from="1680769565025" duration="9837000" />
+      <workItem from="1680849096752" duration="5785000" />
+      <workItem from="1680869380226" duration="927000" />
+      <workItem from="1680933334348" duration="10790000" />
+      <workItem from="1681018802074" duration="6051000" />
+      <workItem from="1681102508314" duration="12703000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
